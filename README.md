@@ -4,9 +4,9 @@
 
 OUTPUT 다운 경로
 ------
-파일명 : kakaobank.jar
-경로 : [github]/output/kakaobank.jar
-[Dribbble link]: https://github.com/tel407/kakaobank/blob/23ef6a0b963f34c761aba2d0a5eea60d031ddf62/output/kakaobank.jar
+- 파일명 : kakaobank.jar
+- 경로 : [github]/output/kakaobank.jar<br>
+[다운링크]:  https://github.com/tel407/kakaobank/blob/23ef6a0b963f34c761aba2d0a5eea60d031ddf62/output/kakaobank.jar
 
 API 정의서
 ------
@@ -21,12 +21,12 @@ API 정의서
 `pageNumber` | 보여질 페이지 넘버 | `1`
 `pageSize` | 보여질 컨텐츠 갯수|`10`
   
-  예시 ) [Dribbble link]: http://localhost:8080/search/blog?searchword=카카오과제&searchsort=recency
+  예시 ) [예시링크]: http://localhost:8080/search/blog?searchword=카카오과제&searchsort=recency
   <br><br><br>
 ### 과제 2. [인기 검색어 목록]
  URL -GET /rank/keyword
   
-  예시 ) [Dribbble link]: http://localhost:8080/rank/keyword
+  예시 ) [예시링크]: http://localhost:8080/rank/keyword
 
 <br><br><br><br>
 
