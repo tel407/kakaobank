@@ -2,9 +2,11 @@
 
 <br><br>
 
-OUTPUT 경로
+OUTPUT 다운 경로
 ------
-
+파일명 : kakaobank.jar
+경로 : [github]/output/kakaobank.jar
+[Dribbble link]: https://github.com/tel407/kakaobank/blob/23ef6a0b963f34c761aba2d0a5eea60d031ddf62/output/kakaobank.jar
 
 API 정의서
 ------
@@ -26,3 +28,16 @@ API 정의서
   
   예시 ) [Dribbble link]: http://localhost:8080/rank/keyword
 
+<br><br><br><br>
+
+
+과제 추가 설명
+------
+### 모듈 설명
+- app-code : (어플리케이션)
+- module-api : (request & respons 처리만 담당하는 Module)
+- module-data : (비지니스 로직 및 domain 처리 담당 하는 Module)
+- module-common : (Utile , Constant 등 모든 모듈이 공통을 가져야하는 공통 Module)
+
+###  추가한 dependencies
+-implementation 'com.github.shin285:KOMORAN:3.3.4' (검색어의 키워드를 뽑기위해 형태소 분석 을 위한 라이브러리 추가)
