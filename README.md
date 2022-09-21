@@ -21,7 +21,7 @@ API 정의서
 `pageNumber` | 보여질 페이지 넘버 | `1`
 `pageSize` | 보여질 컨텐츠 갯수|`10`
   
-  예시 ) [예시링크]: http://localhost:8080/search/blog?searchword=카카오과제&searchsort=recency
+  예시 ) [예시링크]: http://localhost:8080/search/blog?searchWord=카카오과제&searchSort=recency&pageNumber=2&pageSize=15
   <br><br><br>
 ### 과제 2. [인기 검색어 목록]
  URL -GET /rank/keyword
