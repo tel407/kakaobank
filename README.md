@@ -5,6 +5,14 @@ OUTPUT 다운 경로
 - `[git 다운]`: https://github.com/tel407/kakaobank/blob/8dc8bc3227e042d03eff807889ffd056dfb59b16/output/BlogServiceApp.jar<br><br>
 - `[google 다운]`: https://drive.google.com/file/d/1CDAQwYCrnFWoGbgrObvxOXPJiSFQf2a1/view?usp=sharing<br><br>
 
+<br>
+
+실행 환경
+-----------
+ `URL` : localhost
+ `PORT` : 8080
+ 
+ <br>
 
 
 API 정의서
