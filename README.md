@@ -4,10 +4,10 @@
 
 OUTPUT 다운 경로
 ------
-- 파일명 : kakaobank.jar<br><br>
-- 경로 : [github]/output/kakaobank.jar<br><br>
+- 파일명 : BlogServiceApp.jar<br><br>
+- 경로 : [github]/output/BlogServiceApp.jar<br><br>
 [git 다운링크]:  https://github.com/tel407/kakaobank/blob/23ef6a0b963f34c761aba2d0a5eea60d031ddf62/output/kakaobank.jar<br><br>
-[google 다운링크]: https://drive.google.com/file/d/1dKXsYy2Nw-bNOeiZ8aXT3AGziJ69w_jw/view?usp=sharing<br><br>
+[google 다운링크]: https://drive.google.com/file/d/1CDAQwYCrnFWoGbgrObvxOXPJiSFQf2a1/view?usp=sharing<br><br>
 
 
 
