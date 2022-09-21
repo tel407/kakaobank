@@ -1,13 +1,9 @@
-# kakaobank
-
-<br><br>
-
 OUTPUT 다운 경로
 ------
 - 파일명 : BlogServiceApp.jar<br><br>
 - 경로 : [github]/output/BlogServiceApp.jar<br><br>
-[git 다운링크]:  https://github.com/tel407/kakaobank/blob/23ef6a0b963f34c761aba2d0a5eea60d031ddf62/output/kakaobank.jar<br><br>
-[google 다운링크]: https://drive.google.com/file/d/1CDAQwYCrnFWoGbgrObvxOXPJiSFQf2a1/view?usp=sharing<br><br>
+[git 다운]: https://github.com/tel407/kakaobank/blob/8dc8bc3227e042d03eff807889ffd056dfb59b16/output/BlogServiceApp.jar<br><br>
+[google 다운]: https://drive.google.com/file/d/1CDAQwYCrnFWoGbgrObvxOXPJiSFQf2a1/view?usp=sharing<br><br>
 
 
 
@@ -19,10 +15,10 @@ API 정의서
 <strong>파라미터<strong>
   값 | 의미 | 기본값
 ---|:---:|---:
-`searchword` | 검색을 원하는 질의어 | ``
-`searchsort` | 결과 문서 정렬 방식, accuracy(정확도순) 또는 recency(최신순) |`accuracy`
-`pageNumber` | 보여질 페이지 넘버 | `1`
-`pageSize` | 보여질 컨텐츠 갯수|`10`
+`word` | 검색을 원하는 질의어 | ``
+`sort` | 결과 문서 정렬 방식, accuracy(정확도순) 또는 recency(최신순) |`accuracy`
+`page` | 보여질 페이지 넘버 | `1`
+`cnt` | 보여질 컨텐츠 갯수|`10`
   
   예시 ) [예시링크]: http://localhost:8080/search/blog?word=카카오과제&sort=recency&page=2&cnt=15
   <br><br><br>
