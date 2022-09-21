@@ -55,7 +55,6 @@ public class SearchBlogServiceImpl  implements SearchBlogService {
         }
         // 요청 불량시 순차적 검색 API 사용 (KAKAO)
         if(!"S".equals(isSuccess)){
-            //정렬 PRARAM Naver 에 맞게 가공
             KakaoSearchBlogDto kakaoSearchBlogDto = KakaoSearchBlogDto.builder()
                     .query(searchWord)
                     .sort(searchSort)
@@ -69,6 +68,7 @@ public class SearchBlogServiceImpl  implements SearchBlogService {
 
         // 순차적 검색 API 사용 (NAVER)
         if(!"S".equals(isSuccess)){
+            if("accuracy".equals(searchSort)) searchSort = "sim";
             if("recency".equals(searchSort)) searchSort = "date";
             NaverSearchBlogDto naverSearchBlogDto = NaverSearchBlogDto.builder()
                     .query(searchWord)
