@@ -9,7 +9,7 @@ import java.util.ArrayList;
 @Setter
 @NoArgsConstructor
 public class SearchBlogDto {
-    private String searchword;   // 검색을 원하는 질의어
+    private String searchword = "";   // 검색을 원하는 질의어
     private String searchsort = "accuracy";    //결과 문서 정렬 방식
     private Integer pageNumber;   // 검색을 원하는 질의어
     private Integer pageSize;    //결과 문서 정렬 방식
