@@ -26,6 +26,7 @@ public class NaverSearchBlog implements ISearchBlog<NaverSearchBlogDto>{
     @Autowired
     private ApiSupportUtil ApiSupportUtil;
     private SearchBlogDto.SearchBlogResult searchBlogResult;
+    public String moduleName = "NAVER_BLOG_API";
 
     @Override
     public Map<String, Object> validRequestParam(NaverSearchBlogDto naverSearchBlogDto) throws Exception {
@@ -38,11 +39,18 @@ public class NaverSearchBlog implements ISearchBlog<NaverSearchBlogDto>{
     }
 
     @Override
-    public Map<String, Object> apiConnect(NaverSearchBlogDto naverSearchBlogDto){
+    public Map<String, Object> apiConnect(SearchBlogDto.SearchBlogRequestDto search){
         Map<String,Object> rsltMap = new HashMap<>();
         rsltMap.put("status","S");
         try {
-
+            String searchSort = "sim";
+            if("recency".equals(search.getSort().trim())) searchSort = "date";
+            NaverSearchBlogDto naverSearchBlogDto = NaverSearchBlogDto.builder()
+                    .query(search.getWord().trim())
+                    .sort(searchSort)
+                    .start(search.getPage())
+                    .display(search.getCnt())
+                    .build();
             //필수 PARAM 검사
             this.validRequestParam(naverSearchBlogDto);
 

@@ -6,6 +6,6 @@ import java.util.Map;
 
 public interface ISearchBlog<T> {
     Map<String, Object> validRequestParam(T searchBlogDto) throws Exception;
-    Map<String, Object> apiConnect(T searchBlogDto);
+    Map<String, Object> apiConnect(SearchBlogDto.SearchBlogRequestDto searchParam);
     SearchBlogDto.SearchBlogResult getSerchBlogResult();
 }

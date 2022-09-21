@@ -6,12 +6,12 @@ import lombok.*;
 
 /**
  * ==============================================================================================
- * 카카오 블로그 조회 API Request Dto
+ * 카카오 블로그 API 조회  Request Dto
  * ----------------------------------------------------------------------------------------------
  */
 @Getter
 @Builder
-public class KakaoSearchBlogDto extends SearchBlogDto {
+public class KakaoSearchBlogDto extends SearchBlogDto.SearchBlogRequestDto {
 	private String query; // 검색을 원하는 질의어
 	private Integer page; // 결과 페이지 번호, 1~50 사이의 값, 기본 값
 	private Integer size; // 한 페이지에 보여질 문서 수, 1~50 사이의 값, 기본 값 10

@@ -31,75 +31,80 @@ public class SearchBlogServiceImpl  implements SearchBlogService {
     @Autowired private NaverSearchBlog naverSearchBlog;
     @Autowired private SearchKeywordScoreiRepository searchKeywordScoreiRepository;
 
-
     /**
      * ==============================================================================================
      * 블로그 검색 결과 조회
      * ----------------------------------------------------------------------------------------------
      */
     @Override
-    public Map<String,Object> getSearchBlogByKeyword(SearchBlogDto search) {
+    public Map<String,Object> getSearchBlogByKeyword(SearchBlogDto.SearchBlogRequestDto searchParam) {
         Map<String,Object> rsltMap = new HashMap<>();
-        Map<String,Object> connectResult = new HashMap<>();
-        String searchWord = search.getSearchWord().trim(); // 검색어 PARAM
-        String searchSort = search.getSearchSort().trim(); // 정렬 PARAM
-        ISearchBlog searchBlog = null; //결과값 도출하기위한 다형성
-        String isSuccess = "N";
-        int pageNumber = 1; // 현재 페이지 PARAM
-        int pageSize = 10; // 노출할 페이지 사이즈 PARAM
-        if(search.getPageNumber() != null && 0 < search.getPageNumber()){
-            pageNumber = search.getPageNumber();
-        }
-        if(search.getPageSize() != null && 0 < search.getPageSize()){
-            pageSize = search.getPageSize();
-        }
-        // 요청 불량시 순차적 검색 API 사용 (KAKAO)
-        if(!"S".equals(isSuccess)){
-            KakaoSearchBlogDto kakaoSearchBlogDto = KakaoSearchBlogDto.builder()
-                    .query(searchWord)
-                    .sort(searchSort)
-                    .page(pageNumber)
-                    .size(pageSize)
-                    .build();
-            searchBlog = kakaoSearchBlog;
-            connectResult = kakaoSearchBlog.apiConnect(kakaoSearchBlogDto);
-            isSuccess = connectResult.get("status").toString();
-        }
-
-        // 순차적 검색 API 사용 (NAVER)
-        if(!"S".equals(isSuccess)){
-            if("accuracy".equals(searchSort)) searchSort = "sim";
-            if("recency".equals(searchSort)) searchSort = "date";
-            NaverSearchBlogDto naverSearchBlogDto = NaverSearchBlogDto.builder()
-                    .query(searchWord)
-                    .sort(searchSort)
-                    .start(pageNumber)
-                    .display(pageSize)
-                    .build();
-            searchBlog = naverSearchBlog;
-            connectResult = naverSearchBlog.apiConnect(naverSearchBlogDto);
-            isSuccess = connectResult.get("status").toString();
-        }
-
         rsltMap.put("status","ERROR");
-        rsltMap.put("messgae",connectResult.get("message"));
+
+        SearchBlogDto.SearchBlogRequestDto search = this.validPageParam(searchParam);
+        Map<String,Object> moduleCallResult = this.callSearchBlogApiModule(search);
+
+        Map<String,Object> connectResult = (Map<String,Object>) moduleCallResult.get("connectResult"); // 모듈결과
+        ISearchBlog searchBlog = (ISearchBlog) moduleCallResult.get("searchBlog"); // 요청한 객체
+        String isSuccess = (String) moduleCallResult.get("isSuccess"); //모듈 연계 처리결과
+        String moduleName = (String) moduleCallResult.get("moduleName"); //처리한 모듈명
+
         //GET 블로그 조회 결과
         if("S".equals(isSuccess)){
             SearchBlogDto.SearchBlogResult searchBlogResult = searchBlog.getSerchBlogResult();
-            this.updateKewordForRDBMS(searchWord);
-            //페이징 처리
+            this.updateKewordForRDBMS(search.getWord());
+            //페이징 객체
             Page<SearchBlogDto.SearchBlogItem> pageing = new PageImpl<>(
                     searchBlogResult.getSearchBlogList(),
-                    PageRequest.of(pageNumber - 1, pageSize),
+                    PageRequest.of(search.getPage() - 1, search.getCnt()),
                     searchBlogResult.getPageableCount()
             );
-            rsltMap.put("status","SUCESS");
+            rsltMap.put("status","SUCCESS");
             rsltMap.put("data",pageing);
         }
+
+        rsltMap.put("moduleName", moduleName);
+        rsltMap.put("messgae",connectResult.get("message"));
 
         return rsltMap;
     }
 
+
+    /**
+     * ==============================================================================================
+     * 블로그 조회 API 모듈 (KAKAO, NAVER) 
+     *  - KAKAO 모듈 실패시 NAVER 모듈로 전환
+     * ----------------------------------------------------------------------------------------------
+     */
+    private Map<String,Object> callSearchBlogApiModule(SearchBlogDto.SearchBlogRequestDto search){
+        Map<String,Object> rsltMap = new HashMap<>();
+        Map<String,Object> connectResult = new HashMap<>();
+        ISearchBlog searchBlog = null; //결과값 도출하기위한 다형성
+        String isSuccess = "N";
+        String moduleName = "";
+
+        // 요청 불량시 순차적 검색 API 사용 (KAKAO)
+        if(!"S".equals(isSuccess)){
+            searchBlog = kakaoSearchBlog;
+            connectResult = kakaoSearchBlog.apiConnect(search);
+            isSuccess = connectResult.get("status").toString();
+            moduleName = kakaoSearchBlog.moduleName;
+        }
+
+        // 요청 불량시 순차적 검색 API 사용 (KAKAO)
+        if(!"S".equals(isSuccess)){
+            searchBlog = naverSearchBlog;
+            connectResult = naverSearchBlog.apiConnect(search);
+            isSuccess = connectResult.get("status").toString();
+            moduleName = naverSearchBlog.moduleName;
+        }
+
+        rsltMap.put("searchBlog",searchBlog);
+        rsltMap.put("connectResult",connectResult);
+        rsltMap.put("isSuccess",isSuccess);
+        rsltMap.put("moduleName",moduleName);
+        return rsltMap;
+    }
     /**
      * ==============================================================================================
      * 인기 검색어 목록 조회
@@ -120,10 +125,30 @@ public class SearchBlogServiceImpl  implements SearchBlogService {
                     .score(topITem.getScore())
                     .build()
             );
-
         }
         rsltMap.put("data",rankList);
         return rsltMap;
+    }
+
+    /**
+     * ==============================================================================================
+     * 페이징 정보 유효성 체크 및 기본값 으로 변환
+     * ----------------------------------------------------------------------------------------------
+     */
+    @Override
+    public SearchBlogDto.SearchBlogRequestDto validPageParam(SearchBlogDto.SearchBlogRequestDto searchParam) {
+        int pageNumber = 1;
+        int pageSize = 10;
+        if(searchParam.getPage() != null && 0 < searchParam.getPage()){
+            pageNumber = searchParam.getPage();
+        }
+        if(searchParam.getCnt() != null && 0 < searchParam.getCnt()){
+            pageSize = searchParam.getCnt();
+        }
+        searchParam.setPage(pageNumber);
+        searchParam.setCnt(pageSize);
+
+        return searchParam;
     }
 
     /**
@@ -166,7 +191,5 @@ public class SearchBlogServiceImpl  implements SearchBlogService {
             if(!inBool) saveList.add(SearchKeywordScore.builder().keyword(searchKeyWord).score(1).build());
         }
         searchKeywordScoreiRepository.saveAll(saveList);
-
-
     }
 }

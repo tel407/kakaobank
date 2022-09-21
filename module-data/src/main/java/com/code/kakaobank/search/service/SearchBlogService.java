@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface SearchBlogService {
-    Map<String,Object> getSearchBlogByKeyword(SearchBlogDto search);
-
+    Map<String,Object> getSearchBlogByKeyword(SearchBlogDto.SearchBlogRequestDto searchParam);
     Map<String,Object> getSearchRankByKeyword();
+    SearchBlogDto.SearchBlogRequestDto validPageParam(SearchBlogDto.SearchBlogRequestDto searchParam);
 
 }

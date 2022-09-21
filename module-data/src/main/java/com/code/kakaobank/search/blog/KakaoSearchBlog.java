@@ -26,6 +26,7 @@ public class KakaoSearchBlog implements ISearchBlog<KakaoSearchBlogDto>{
     @Value("${kakao.api.host}") private String kakaoApiHost;
     @Value("${kakao.api.search.blog.url}") private String kakaoApiUrl;
     @Value("${kakao.api.key}") private String kakaoApiKey;
+    public String moduleName = "KAKAO_BLOG_API";
 
     @Autowired
     private ApiSupportUtil ApiSupportUtil;
@@ -42,10 +43,18 @@ public class KakaoSearchBlog implements ISearchBlog<KakaoSearchBlogDto>{
     }
 
     @Override
-    public Map<String, Object> apiConnect(KakaoSearchBlogDto kakaoSearchBlogDto){
+    public Map<String, Object> apiConnect(SearchBlogDto.SearchBlogRequestDto search){
         Map<String,Object> rsltMap = new HashMap<>();
         rsltMap.put("status","S");
         try {
+
+            KakaoSearchBlogDto kakaoSearchBlogDto = KakaoSearchBlogDto.builder()
+                    .query(search.getWord().trim())
+                    .sort(search.getSort().trim())
+                    .page(search.getPage())
+                    .size(search.getCnt())
+                    .build();
+
             //필수 PARAM 검사
             this.validRequestParam(kakaoSearchBlogDto);
 

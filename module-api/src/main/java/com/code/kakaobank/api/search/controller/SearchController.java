@@ -23,8 +23,8 @@ public class SearchController {
 	 * ----------------------------------------------------------------------------------------------
 	 */
 	@RequestMapping(value = "/blog", method = RequestMethod.GET)
-	public Map<String,Object> getSearchBlog(SearchBlogDto search, HttpServletRequest request, HttpServletResponse response){
-		Map<String,Object> rstMap = searchBlogService.getSearchBlogByKeyword(search);
+	public Map<String,Object> getSearchBlog(SearchBlogDto.SearchBlogRequestDto searchParam, HttpServletRequest request, HttpServletResponse response){
+		Map<String,Object> rstMap = searchBlogService.getSearchBlogByKeyword(searchParam);
 		return rstMap;
 	}
 }
