@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class KakaoSearchBlog implements ISearchBlog<KakaoSearchBlogDto>{
+public class KakaoSearchBlogTest implements ISearchBlogTest<KakaoSearchBlogDto>{
     @Value("${kakao.api.host}") private String kakaoApiHost;
     @Value("${kakao.api.search.blog.url}") private String kakaoApiUrl;
     @Value("${kakao.api.key}") private String kakaoApiKey;
@@ -40,11 +40,10 @@ public class KakaoSearchBlog implements ISearchBlog<KakaoSearchBlogDto>{
     }
 
     @Override
-    public Map<String, Object> apiConnect(SearchBlogDto.SearchBlogRequestDto search){
+    public Map<String, Object> apiConnect(SearchBlogDto.SearchBlogRequestDto search, boolean forceError ){
         Map<String,Object> rsltMap = new HashMap<>();
         rsltMap.put("status","S");
         try {
-
             KakaoSearchBlogDto kakaoSearchBlogDto = KakaoSearchBlogDto.builder()
                     .query(search.getWord().trim())
                     .sort(search.getSort().trim())
@@ -55,6 +54,9 @@ public class KakaoSearchBlog implements ISearchBlog<KakaoSearchBlogDto>{
             //필수 PARAM 검사
             this.validRequestParam(kakaoSearchBlogDto);
 
+            if(forceError){
+                throw new Exception("##### Test를 위해 강제 에러 발항 ####");
+            }
             URL apiURL = new URL(this.kakaoApiHost + this.kakaoApiUrl);
             HttpsURLConnection offerConn = (HttpsURLConnection) apiURL.openConnection();
             offerConn.setRequestMethod("GET");

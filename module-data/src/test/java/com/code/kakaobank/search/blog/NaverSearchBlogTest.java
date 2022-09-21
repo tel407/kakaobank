@@ -1,7 +1,7 @@
 package com.code.kakaobank.search.blog;
 
 import com.code.kakaobank.common.util.ApiSupportUtil;
-import com.code.kakaobank.search.payload.KakaoSearchBlogDto;
+import com.code.kakaobank.search.payload.NaverSearchBlogDto;
 import com.code.kakaobank.search.payload.SearchBlogDto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,71 +12,65 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.DataOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class KakaoSearchBlog implements ISearchBlog<KakaoSearchBlogDto>{
-    @Value("${kakao.api.host}") private String kakaoApiHost;
-    @Value("${kakao.api.search.blog.url}") private String kakaoApiUrl;
-    @Value("${kakao.api.key}") private String kakaoApiKey;
-    public String moduleName = "KAKAO_BLOG_API";
-
+public class NaverSearchBlogTest implements ISearchBlogTest<NaverSearchBlogDto>{
+    @Value("${naver.api.host}") private String naverApiHost;
+    @Value("${naver.api.search.blog.url}") private String naverApiUrl;
+    @Value("${naver.api.client.id}") private String naverApiClientId;
+    @Value("${naver.api.client.secret}") private String naverApiClientSecret;
     @Autowired
     private ApiSupportUtil ApiSupportUtil;
     private SearchBlogDto.SearchBlogResult searchBlogResult;
+    public String moduleName = "NAVER_BLOG_API";
 
     @Override
-    public Map<String, Object> validRequestParam(KakaoSearchBlogDto kakaoSearchBlogDto) throws Exception {
+    public Map<String, Object> validRequestParam(NaverSearchBlogDto naverSearchBlogDto) throws Exception {
         Map<String,Object> rsltMap = new HashMap<>();
         rsltMap.put("status","S");
-        if( null == kakaoSearchBlogDto.getQuery() || "".equals(kakaoSearchBlogDto.getQuery())){
+        if( null == naverSearchBlogDto.getQuery() || "".equals(naverSearchBlogDto.getQuery())){
             throw new Exception("검색어는(query) 필수값 입니다");
         }
         return rsltMap;
     }
 
     @Override
-    public Map<String, Object> apiConnect(SearchBlogDto.SearchBlogRequestDto search){
+    public Map<String, Object> apiConnect(SearchBlogDto.SearchBlogRequestDto search, boolean forceError ){
         Map<String,Object> rsltMap = new HashMap<>();
         rsltMap.put("status","S");
         try {
-
-            KakaoSearchBlogDto kakaoSearchBlogDto = KakaoSearchBlogDto.builder()
+            String searchSort = "sim";
+            if("recency".equals(search.getSort().trim())) searchSort = "date";
+            NaverSearchBlogDto naverSearchBlogDto = NaverSearchBlogDto.builder()
                     .query(search.getWord().trim())
-                    .sort(search.getSort().trim())
-                    .page(search.getPage())
-                    .size(search.getCnt())
+                    .sort(searchSort)
+                    .start(search.getPage())
+                    .display(search.getCnt())
                     .build();
-
             //필수 PARAM 검사
-            this.validRequestParam(kakaoSearchBlogDto);
+            this.validRequestParam(naverSearchBlogDto);
 
-            URL apiURL = new URL(this.kakaoApiHost + this.kakaoApiUrl);
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> mapParam = objectMapper.convertValue(naverSearchBlogDto, new TypeReference<Map<String, Object>>() {});
+
+            URL apiURL = new URL(this.naverApiHost + this.naverApiUrl+"?"+ ApiSupportUtil.paramToQueryString(mapParam));
             HttpsURLConnection offerConn = (HttpsURLConnection) apiURL.openConnection();
             offerConn.setRequestMethod("GET");
-            offerConn.setRequestProperty("Authorization","KakaoAK "+this.kakaoApiKey);
-            offerConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+            offerConn.setRequestProperty("X-Naver-Client-Id",this.naverApiClientId);
+            offerConn.setRequestProperty("X-Naver-Client-Secret",this.naverApiClientSecret);
             offerConn.setConnectTimeout(6000);
             offerConn.setDoOutput(true);
-            ObjectMapper objectMapper = new ObjectMapper();
-            Map<String, Object> mapParam = objectMapper.convertValue(kakaoSearchBlogDto, new TypeReference<Map<String, Object>>() {});
-
-            DataOutputStream cpnOfferWr = new DataOutputStream(offerConn.getOutputStream());
-            cpnOfferWr.writeBytes(ApiSupportUtil.paramToQueryString(mapParam));
-            cpnOfferWr.flush();
-            cpnOfferWr.close();
 
             JSONObject jObjectResponse = new JSONObject(ApiSupportUtil.handleResponse(offerConn));
             if(200 == offerConn.getResponseCode()) {
-                this.convertResultDataByKaKao(jObjectResponse);
+                this.convertResultDataByNaver(jObjectResponse);
                 rsltMap.put("message","SUCCESS :: API 호출 성공");
             }else{
-                String aaa = jObjectResponse.get("message").toString();
-                throw new Exception(jObjectResponse.get("message").toString());
+                throw new Exception(jObjectResponse.get("errorMessage").toString());
             }
         } catch (Exception e) {
             rsltMap.put("status","E");
@@ -90,10 +84,9 @@ public class KakaoSearchBlog implements ISearchBlog<KakaoSearchBlogDto>{
         return searchBlogResult;
     }
 
-    private void convertResultDataByKaKao(JSONObject jObjectResponse) throws Exception{
+    private void convertResultDataByNaver(JSONObject jObjectResponse) throws Exception{
         // 데이터 가공
-        JSONObject meta = jObjectResponse.getJSONObject("meta");
-        JSONArray documentList =jObjectResponse.getJSONArray("documents");
+        JSONArray documentList =jObjectResponse.getJSONArray("items");
         ArrayList<SearchBlogDto.SearchBlogItem> SearchBlogList = new ArrayList<>();
         // 블로그 검색 내용
         for (Object item :  documentList){
@@ -101,19 +94,19 @@ public class KakaoSearchBlog implements ISearchBlog<KakaoSearchBlogDto>{
             SearchBlogList.add(
                 SearchBlogDto.SearchBlogItem.builder()
                     .title(documentItem.get("title").toString())
-                    .contents(documentItem.get("contents").toString())
-                    .url(documentItem.get("url").toString())
-                    .blogname(documentItem.get("blogname").toString())
-                    .thumbnail(documentItem.get("thumbnail").toString())
-                    .datetime(documentItem.get("datetime").toString())
+                    .contents(documentItem.get("description").toString())
+                    .url(documentItem.get("link").toString())
+                    .blogname(documentItem.get("bloggername").toString())
+                    .thumbnail("")
+                    .datetime(documentItem.get("postdate").toString())
                     .build()
             );
         }
 
         SearchBlogDto.SearchBlogResult searchBlogResultData = SearchBlogDto.SearchBlogResult.builder()
-                .totalCount((int)meta.get("total_count"))
-                .pageableCount((int)meta.get("pageable_count"))
-                .isEnd((boolean)meta.get("is_end"))
+                .totalCount((int)jObjectResponse.get("total"))
+                .pageableCount((int)jObjectResponse.get("total"))
+                .isEnd(false)
                 .SearchBlogList(SearchBlogList)
                 .build();
 

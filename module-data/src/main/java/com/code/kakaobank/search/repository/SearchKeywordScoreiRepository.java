@@ -16,6 +16,7 @@ import java.util.List;
 @Repository
 public interface SearchKeywordScoreiRepository extends JpaRepository<SearchKeywordScore, String> {
 
+    /*동시성 문제*/
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "1000")})
     @Transactional

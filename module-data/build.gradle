@@ -5,9 +5,5 @@ dependencies {
     implementation 'org.json:json:20190722'
     runtimeOnly 'com.h2database:h2'
 }
-bootJar {
-    enabled = false
-}
-jar {
-    enabled = true
-}
+bootJar { enabled = false }
+jar { enabled = true }

@@ -1,6 +1,8 @@
 package com.code.kakaobank.api.search.controller;
 import com.code.kakaobank.search.payload.SearchBlogDto;
 import com.code.kakaobank.search.service.SearchBlogService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,8 +25,11 @@ public class SearchController {
 	 * ----------------------------------------------------------------------------------------------
 	 */
 	@RequestMapping(value = "/blog", method = RequestMethod.GET)
-	public Map<String,Object> getSearchBlog(SearchBlogDto.SearchBlogRequestDto searchParam, HttpServletRequest request, HttpServletResponse response){
+	public String getSearchBlog(SearchBlogDto.SearchBlogRequestDto searchParam, HttpServletRequest request, HttpServletResponse response){
 		Map<String,Object> rstMap = searchBlogService.getSearchBlogByKeyword(searchParam);
-		return rstMap;
+		
+		String formattedData=new GsonBuilder().setPrettyPrinting().create().toJson(rstMap); //JSON 정렬
+
+		return formattedData;
 	}
 }

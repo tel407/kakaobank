@@ -1,5 +1,6 @@
 package com.code.kakaobank;
 
+import org.junit.runner.JUnitCore;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -20,7 +21,6 @@ public class KakaobankApplication {
 		}
 		catch(Exception e){
 		}
-
 		SpringApplication.run(KakaobankApplication.class, args);
 	}
 

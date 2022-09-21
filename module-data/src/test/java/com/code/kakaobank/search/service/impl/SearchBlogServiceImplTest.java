@@ -1,15 +1,11 @@
 package com.code.kakaobank.search.service.impl;
 
-import com.code.kakaobank.search.blog.ISearchBlog;
-import com.code.kakaobank.search.blog.KakaoSearchBlog;
-import com.code.kakaobank.search.blog.NaverSearchBlog;
+import com.code.kakaobank.search.blog.*;
 import com.code.kakaobank.search.entity.SearchKeywordScore;
-import com.code.kakaobank.search.payload.KakaoSearchBlogDto;
-import com.code.kakaobank.search.payload.NaverSearchBlogDto;
 import com.code.kakaobank.search.payload.SearchBlogDto;
 import com.code.kakaobank.search.payload.SearchRankDto;
 import com.code.kakaobank.search.repository.SearchKeywordScoreiRepository;
-import com.code.kakaobank.search.service.SearchBlogService;
+import com.code.kakaobank.search.service.SearchBlogServiceTest;
 import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.core.Komoran;
 import kr.co.shineware.nlp.komoran.model.KomoranResult;
@@ -25,10 +21,10 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class SearchBlogServiceImpl  implements SearchBlogService {
+public class SearchBlogServiceImplTest implements SearchBlogServiceTest {
 
-    @Autowired private KakaoSearchBlog kakaoSearchBlog;
-    @Autowired private NaverSearchBlog naverSearchBlog;
+    @Autowired private KakaoSearchBlogTest kakaoSearchBlog;
+    @Autowired private NaverSearchBlogTest naverSearchBlog;
     @Autowired private SearchKeywordScoreiRepository searchKeywordScoreiRepository;
 
     /**
@@ -69,23 +65,25 @@ public class SearchBlogServiceImpl  implements SearchBlogService {
         return rsltMap;
     }
 
+
     /**
      * ==============================================================================================
      * 블로그 조회 API 모듈 (KAKAO, NAVER) 
      *  - KAKAO 모듈 실패시 NAVER 모듈로 전환
      * ----------------------------------------------------------------------------------------------
      */
-    private Map<String,Object> callSearchBlogApiModule(SearchBlogDto.SearchBlogRequestDto search){
+    @Override
+    public Map<String,Object> callSearchBlogApiModule(SearchBlogDto.SearchBlogRequestDto search){
         Map<String,Object> rsltMap = new HashMap<>();
         Map<String,Object> connectResult = new HashMap<>();
-        ISearchBlog searchBlog = null; //결과값 도출하기위한 다형성
+        ISearchBlogTest searchBlog = null; //결과값 도출하기위한 다형성
         String isSuccess = "N";
         String moduleName = "";
 
         // 요청 불량시 순차적 검색 API 사용 (KAKAO)
         if(!"S".equals(isSuccess)){
             searchBlog = kakaoSearchBlog;
-            connectResult = kakaoSearchBlog.apiConnect(search);
+            connectResult = kakaoSearchBlog.apiConnect(search,true);
             isSuccess = connectResult.get("status").toString();
             moduleName = kakaoSearchBlog.moduleName;
         }
@@ -93,7 +91,7 @@ public class SearchBlogServiceImpl  implements SearchBlogService {
         // 요청 불량시 순차적 검색 API 사용 (KAKAO)
         if(!"S".equals(isSuccess)){
             searchBlog = naverSearchBlog;
-            connectResult = naverSearchBlog.apiConnect(search);
+            connectResult = naverSearchBlog.apiConnect(search,false);
             isSuccess = connectResult.get("status").toString();
             moduleName = naverSearchBlog.moduleName;
         }
@@ -115,7 +113,7 @@ public class SearchBlogServiceImpl  implements SearchBlogService {
         rsltMap.put("status","SUCCESS");
         List<SearchKeywordScore> topList =  searchKeywordScoreiRepository.findTop10ByOrderByScoreDesc();
         List<SearchRankDto> rankList = new ArrayList<>();
-        int rankNum = 0;
+        int rankNum=0;
         for(SearchKeywordScore topITem: topList){
             rankNum++;
             rankList.add(SearchRankDto.builder()
@@ -173,6 +171,7 @@ public class SearchBlogServiceImpl  implements SearchBlogService {
      * 검색시 키워드 조회 후 카운트
      * ----------------------------------------------------------------------------------------------
      */
+    @Override
     public void updateKewordForRDBMS(String searchWord){
         List<String> keyWordList = this.getKeyWordList(searchWord);
         List<SearchKeywordScore> keywordList = searchKeywordScoreiRepository.findByKeywordInOrderByScoreDesc(keyWordList);
