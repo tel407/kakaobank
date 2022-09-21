@@ -29,7 +29,6 @@ API 정의서
   <br><br><br>
 ### `과제 2` [인기 검색어 목록]
  
- <br>
  
  `URL`  <strong>-GET /rank/keyword <strong>
  
@@ -41,13 +40,31 @@ API 정의서
 <br><br><br><br>
 
 
-과제 추가 설명
+과제 설명
 ------
-### 모듈 설명
-- app-code : (어플리케이션)
-- module-api : (request & respons 처리만 담당하는 Module)
-- module-data : (비지니스 로직 및 domain 처리 담당 하는 Module)
-- module-common : (Utile 등 공통으로 가져야하는 공통 Module)
+ ### 모듈 설명
+- `app-code` : (어플리케이션)
+- `module-api` : (request & respons 처리만 담당하는 Module)
+- `module-data` : (비지니스 로직 및 domain 처리 담당 하는 Module)
+- `module-common` : (Utile 등 공통으로 가져야하는 공통 Module) <br>
+  <br>
+ 
+ 
+ ### JUnit TEST
+-  비지니스 로직이 있는 `module-data` 모듈에서 진행 <br>
+  <br>
+ 
+ 
+ 
+ ### 추가요건 처리사항
+-  모듈 구성 및 모듈간 의존성 제약
+-  동시성 이슈가 발생할 수 있는 부분을 염두에 둔 구현 (예시. 키워드 별로 검색된 횟수의 정확도)
+-  카카오 블로그 검색 API에 장애가 발생한 경우, 네이버 블로그 검색 API를 통해 데이터 제공 <br>
+  <br>
 
+ 
+ 
 ###  추가한 dependencies
--implementation 'com.github.shin285:KOMORAN:3.3.4' (검색어의 키워드를 뽑기위해 형태소 분석 을 위한 라이브러리 추가)
+-implementation 'com.github.shin285:KOMORAN:3.3.4' (검색어의 키워드를 뽑기위해 형태소 분석 을 위한 라이브러리 추가) <br>
+-implementation 'org.json:json:20190722' (JSONObject 사용) <br>
+-implementation 'com.google.code.gson:gson:2.8.2' (JSON 정렬 사용) <br>
