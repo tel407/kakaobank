@@ -4,7 +4,7 @@ dependencies {
     implementation project(':module-api')
 }
 bootJar{
-    archivesBaseName = 'kakaobank'
-    archiveFileName = 'kakaobank.jar'
+    archivesBaseName = 'BlogServiceApp'
+    archiveFileName = 'BlogServiceApp.jar'
     archiveVersion = "0.0.1"
 }
