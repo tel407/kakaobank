@@ -30,7 +30,7 @@ API 정의서
 ### `과제 2` [인기 검색어 목록]
  
  
- `URL`  <strong>-GET /rank/keyword <strong>
+ `URL`  <strong>-GET -- /rank/keyword <strong>
  
  <br>
   예시 ) [예시링크] :
