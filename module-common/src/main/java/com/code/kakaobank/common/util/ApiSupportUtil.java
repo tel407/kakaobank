@@ -17,7 +17,11 @@ import java.util.Map;
 
 @Component
 public class ApiSupportUtil {
-
+    /**
+     * ==============================================================================================
+     * QueryString 만들기 Util
+     * ----------------------------------------------------------------------------------------------
+     */
     public String paramToQueryString(Map<String, Object> paramMap){
         List<NameValuePair> params = new ArrayList<>();
         if(paramMap != null){
@@ -31,6 +35,11 @@ public class ApiSupportUtil {
         return URLEncodedUtils.format(params, "UTF-8");
     }
 
+    /**
+     * ==============================================================================================
+     * http Util
+     * ----------------------------------------------------------------------------------------------
+     */
     public String handleResponse(HttpsURLConnection con) throws IOException {
         int responseCode = con.getResponseCode();
         boolean responseError = false;

@@ -3,6 +3,12 @@ package com.code.kakaobank.search.payload;
 
 import lombok.*;
 
+
+/**
+ * ==============================================================================================
+ * 카카오 블로그 조회 API Request Dto
+ * ----------------------------------------------------------------------------------------------
+ */
 @Getter
 @Builder
 public class KakaoSearchBlogDto extends SearchBlogDto {

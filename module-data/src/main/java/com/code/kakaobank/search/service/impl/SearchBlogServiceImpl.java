@@ -31,12 +31,18 @@ public class SearchBlogServiceImpl  implements SearchBlogService {
     @Autowired private NaverSearchBlog naverSearchBlog;
     @Autowired private SearchKeywordScoreiRepository searchKeywordScoreiRepository;
 
+
+    /**
+     * ==============================================================================================
+     * 블로그 검색 결과 조회
+     * ----------------------------------------------------------------------------------------------
+     */
     @Override
     public Map<String,Object> getSearchBlogByKeyword(SearchBlogDto search) {
         Map<String,Object> rsltMap = new HashMap<>();
         Map<String,Object> connectResult = new HashMap<>();
-        String searchWord = search.getSearchword().trim(); // 검색어 PARAM
-        String searchSort = search.getSearchsort().trim(); // 정렬 PARAM
+        String searchWord = search.getSearchWord().trim(); // 검색어 PARAM
+        String searchSort = search.getSearchSort().trim(); // 정렬 PARAM
         ISearchBlog searchBlog = null; //결과값 도출하기위한 다형성
         String isSuccess = "N";
         int pageNumber = 1; // 현재 페이지 PARAM
@@ -45,9 +51,9 @@ public class SearchBlogServiceImpl  implements SearchBlogService {
             pageNumber = search.getPageNumber();
         }
         if(search.getPageSize() != null && 0 < search.getPageSize()){
-            pageSize = search.getPageNumber();
+            pageSize = search.getPageSize();
         }
-        // 순차적 검색 API 사용 (KAKAO)
+        // 요청 불량시 순차적 검색 API 사용 (KAKAO)
         if(!"S".equals(isSuccess)){
             //정렬 PRARAM Naver 에 맞게 가공
             KakaoSearchBlogDto kakaoSearchBlogDto = KakaoSearchBlogDto.builder()
@@ -94,6 +100,11 @@ public class SearchBlogServiceImpl  implements SearchBlogService {
         return rsltMap;
     }
 
+    /**
+     * ==============================================================================================
+     * 인기 검색어 목록 조회
+     * ----------------------------------------------------------------------------------------------
+     */
     @Override
     public Map<String,Object> getSearchRankByKeyword() {
         Map<String,Object> rsltMap = new HashMap<>();
@@ -115,7 +126,11 @@ public class SearchBlogServiceImpl  implements SearchBlogService {
         return rsltMap;
     }
 
-    //형태소분석기 사용하기
+    /**
+     * ==============================================================================================
+     * searchWrod 검색어 형태소 분석
+     * ----------------------------------------------------------------------------------------------
+     */
     public List<String> getKeyWordList(String searchWord) {
         Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
         String document = searchWord;
@@ -129,6 +144,11 @@ public class SearchBlogServiceImpl  implements SearchBlogService {
         List<String> keyWordList = this.getKeyWordList(searchWord);
     }
 
+    /**
+     * ==============================================================================================
+     * 검색시 키워드 조회 후 카운트
+     * ----------------------------------------------------------------------------------------------
+     */
     public void updateKewordForRDBMS(String searchWord){
         List<String> keyWordList = this.getKeyWordList(searchWord);
         List<SearchKeywordScore> keywordList = searchKeywordScoreiRepository.findByKeywordInOrderByScoreDesc(keyWordList);

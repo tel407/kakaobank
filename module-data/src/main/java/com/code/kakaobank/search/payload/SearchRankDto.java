@@ -1,14 +1,14 @@
 package com.code.kakaobank.search.payload;
 
 
-import com.code.kakaobank.search.entity.SearchKeywordScore;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.util.ArrayList;
-
+/**
+ * ==============================================================================================
+ * 인기 검색어 목록 조회 결과 항목 Dto (application)
+ * ----------------------------------------------------------------------------------------------
+ */
 @Builder
 @Getter
 public class SearchRankDto {

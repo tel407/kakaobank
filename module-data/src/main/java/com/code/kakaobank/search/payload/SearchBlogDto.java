@@ -1,19 +1,34 @@
 package com.code.kakaobank.search.payload;
 
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 
+
+/**
+ * ==============================================================================================
+ * 블로그 조회 Request Dto (application)
+ * ----------------------------------------------------------------------------------------------
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 public class SearchBlogDto {
-    private String searchword = "";   // 검색을 원하는 질의어
-    private String searchsort = "accuracy";    //결과 문서 정렬 방식
-    private Integer pageNumber;   // 검색을 원하는 질의어
-    private Integer pageSize;    //결과 문서 정렬 방식
+    private String searchWord = "";   // 검색을 원하는 질의어
+    private String searchSort = "accuracy";    //결과 문서 정렬 방식
+    private Integer pageNumber;   // 보여질 페이지 넘버
+    private Integer pageSize;    // 보여질 컨텐츠 갯수
 
+
+    /**
+     * ==============================================================================================
+     * 블로그 조회 결과 Respones Dto (application)
+     * ----------------------------------------------------------------------------------------------
+     */
     @Getter
     @Builder
     public static class SearchBlogResult {
@@ -23,6 +38,12 @@ public class SearchBlogDto {
         private ArrayList<SearchBlogDto.SearchBlogItem> SearchBlogList; //	내용배열
     }
 
+
+    /**
+     * ==============================================================================================
+     * 블로그 조회 결과 항목 Dto (application)
+     * ----------------------------------------------------------------------------------------------
+     */
     @Builder
     @Getter
     public static class SearchBlogItem {

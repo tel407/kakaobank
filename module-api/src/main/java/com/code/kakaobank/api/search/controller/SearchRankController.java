@@ -18,6 +18,11 @@ public class SearchRankController {
 
 	@Autowired private SearchBlogService searchBlogService;
 
+	/**
+	 * ==============================================================================================
+	 * 블로그 검색 API Contoller
+	 * ----------------------------------------------------------------------------------------------
+	 */
 	@RequestMapping(value = "/keyword", method = RequestMethod.GET)
 	public Map<String,Object> getSearchRankByKeword(HttpServletRequest request, HttpServletResponse response){
 		return searchBlogService.getSearchRankByKeyword();

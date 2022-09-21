@@ -4,6 +4,11 @@ package com.code.kakaobank.search.payload;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * ==============================================================================================
+ * 네이버 블로그 조회 API Request Dto
+ * ----------------------------------------------------------------------------------------------
+ */
 @Getter
 @Builder
 public class NaverSearchBlogDto extends SearchBlogDto {

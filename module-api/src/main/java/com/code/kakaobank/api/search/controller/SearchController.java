@@ -17,6 +17,11 @@ public class SearchController {
 
 	@Autowired private SearchBlogService searchBlogService;
 
+	/**
+	 * ==============================================================================================
+	 * 인기 검색어 목록 (10위 까지) API Contoller
+	 * ----------------------------------------------------------------------------------------------
+	 */
 	@RequestMapping(value = "/blog", method = RequestMethod.GET)
 	public Map<String,Object> getSearchBlog(SearchBlogDto search, HttpServletRequest request, HttpServletResponse response){
 		Map<String,Object> rstMap = searchBlogService.getSearchBlogByKeyword(search);
